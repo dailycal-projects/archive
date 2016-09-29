@@ -1,0 +1,11 @@
+{% extends 'browser/base.html' %}
+
+{% block content %}
+<h1>Issue archive</h1>
+<ul>
+{% for issue in object_list %}
+<li><p><a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">{{ issue.date }}</a></p></li>
+{% endfor %}
+</ul>
+
+{% endblock %}

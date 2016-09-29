@@ -1,0 +1,51 @@
+{% extends 'browser/base.html' %}
+
+{% block extra-css %}
+<style>
+	#viewer {
+		width: 100%;
+		max-width: 800px;
+		height: 500px;
+		margin: 20px 0;
+		border: 1px solid black;
+		background: black;
+	}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>{{ object.date }}</h1>
+
+<h3>{% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}Sponsor this issue{% endif %}</h3>
+<p><i class="fa fa-download" aria-hidden="true"></i> &nbsp; <a href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}">Issue PDF</a></p>
+
+<button class="btn btn-default" id="previous-btn">Previous</button>
+<button class="btn btn-default" id="next-btn">Next</button>
+
+<button class="btn btn-default" id="zoom-in-btn">Zoom in</button>
+<button class="btn btn-default" id="zoom-out-btn">Zoom out</button>
+<div id="viewer"></div>
+{% endblock %}
+
+{% block extra-js %}
+<script type="text/javascript">
+var viewer = OpenSeadragon({
+    id: "viewer",
+    previousButton: 'previous-btn',
+    nextButton: 'next-btn',
+    zoomInButton: 'zoom-in-btn',
+    zoomOutButton: 'zoom-out-btn',
+    sequenceMode: true,
+    showReferenceStrip: true,
+    tileSources: [
+    {% for page in object.pages.all %}
+    {
+    	type: 'image',
+        url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.image }}'
+    },
+	{% endfor %}
+	]
+});
+</script>
+{% endblock %}

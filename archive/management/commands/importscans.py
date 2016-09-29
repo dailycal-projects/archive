@@ -6,6 +6,7 @@ from django.core.files import File
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from archive.models import Page, Issue
+from tempfile import TemporaryFile
 
 
 class Command(BaseCommand):
@@ -59,6 +60,11 @@ class Command(BaseCommand):
                         filepath = os.path.join(dir_path, filename)
                         scanned_file = File(open(filepath,'rb'))
                         page.scanned_img.save('', scanned_file)
+                        # Create a jpg
+                        with TemporaryFile() as f:
+                            scan = Image.open(filepath)
+                            scan.save(f, "JPEG")
+                            page.image.save('', File(f))
                         # Create pdf
                         page.create_pdf(scanned_file)
                         page.save()

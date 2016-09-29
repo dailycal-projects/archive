@@ -5,8 +5,12 @@ from django.db import models
 from django.core.files import File
 from tempfile import TemporaryFile
 
-def scan_path(instance, filepath):
+def tif_path(instance, filepath):
     return '{}.tif'.format(
+        instance.canonical_path)
+
+def jpg_path(instance, filepath):
+    return '{}.jpg'.format(
         instance.canonical_path)
 
 def pdf_path(instance, filepath):
@@ -16,7 +20,8 @@ def pdf_path(instance, filepath):
 class Page(models.Model):
     date = models.DateField()
     page_number = models.IntegerField()
-    scanned_img = models.ImageField(null=True, upload_to=scan_path)
+    scanned_img = models.ImageField(null=True, upload_to=tif_path)
+    image = models.ImageField(null=True, upload_to=jpg_path)
     pdf = models.FileField(null=True, upload_to=pdf_path)
     text = models.TextField()
     issue = models.ForeignKey('Issue', null=True, related_name='pages')
@@ -48,8 +53,13 @@ class Page(models.Model):
 
 
 class Issue(models.Model):
-    date = models.DateField()
+    date = models.DateField(unique=True)
     pdf = models.FileField(null=True, upload_to=pdf_path)
+    sponsor = models.CharField(
+        max_length=200,
+        null=True,
+        blank=False
+    )
 
     def create_pdf(self):
         """
