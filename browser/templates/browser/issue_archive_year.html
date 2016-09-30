@@ -1,11 +1,41 @@
 {% extends 'browser/base.html' %}
+{% load static from staticfiles %}
+
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{% static 'browser/css/bootstrap-datetimepicker.min.css' %}"/>
+<style>
+	.month {
+		margin-right: 10px;
+	}
+	.table {
+		font-size: 18px;
+	}
+</style>
+{% endblock %}
 
 {% block content %}
 <h1>Issue archive for {{ year|date:"Y" }}</h1>
-<ul>
-{% for issue in object_list %}
-<li><p><a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">{{ issue.date }}</a></p></li>
-{% endfor %}
-</ul>
 
+<hr>
+
+<table class="table">
+<tbody>
+{% for month in date_list %}
+<tr>
+<td><b>{{ month|date:"F" }}</b></td>
+	{% for issue in object_list reversed %}
+		{% if issue.date.month == month.month %}
+		<td><a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">{{ issue.date.day }}</a></td>
+		{% endif %}
+	{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+{% endblock %}
+
+{% block extra-js %}
+<script src="{% static 'browser/js/moment.min.js' %}"></script>
+<script src="{% static 'browser/js/bootstrap-datetimepicker.min.js' %}"></script>
 {% endblock %}

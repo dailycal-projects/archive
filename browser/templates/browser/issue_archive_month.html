@@ -1,0 +1,57 @@
+{% extends 'browser/base.html' %}
+{% load static from staticfiles %}
+
+{% block extra-css %}
+<link rel="stylesheet" type="text/css" href="{% static 'browser/css/bootstrap-datetimepicker.min.css' %}"/>
+<style>
+    .bootstrap-datetimepicker-widget table td.day {
+        height: 60px;
+        font-size: 20px;
+    }
+	.prev, .picker-switch, .next {
+        display: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Issue archive for {{ month|date:"F Y" }}</h1>
+
+<hr>
+
+<div style="overflow:hidden;">
+    <div class="form-group">
+        <div class="row">
+            <div class="col-md-9">
+                <div id="calendar""></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra-js %}
+<script src="{% static 'browser/js/moment.min.js' %}"></script>
+<script src="{% static 'browser/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script type="text/javascript">
+        var minDate = moment('{{ month }}');
+        var maxDate = minDate.clone().add(1, "months").subtract(1, 'days');
+        var enabledDates = [
+        {% for date in date_list %}
+        moment('{{ date }}'),
+        {% endfor %}
+        ];
+        $(function () {
+            var calendar = $('#calendar').datetimepicker({
+                inline: true,
+                format: 'MM/DD',
+                maxDate: maxDate,
+                minDate: minDate,
+                enabledDates: enabledDates
+            }).on('dp.change', function(e) {
+                window.location.assign(window.location + e.date.format('DD'));
+            });
+        });
+    </script>
+{% endblock %}

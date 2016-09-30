@@ -1,5 +1,7 @@
 {% extends 'browser/base.html' %}
 
+{% block title %}{{ object.date }} | {{ block.super }}{% endblock %}
+
 {% block extra-css %}
 <style>
 	#viewer {
@@ -10,42 +12,134 @@
 		border: 1px solid black;
 		background: black;
 	}
-
+    #page-number {
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>{{ object.date }}</h1>
+<h1>{{ object.date|date:"l, F j, Y" }}</h1>
 
-<h3>{% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}Sponsor this issue{% endif %}</h3>
-<p><i class="fa fa-download" aria-hidden="true"></i> &nbsp; <a href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}">Issue PDF</a></p>
+<p>
+{% with object.get_previous_by_date as issue %}
+<a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">&laquo; Previous issue</a>
+{% endwith %}
+&middot; 
+{% with object.get_next_by_date as issue %}
+<a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">Next issue &raquo;</a>
+{% endwith %}
+</p>
 
-<button class="btn btn-default" id="previous-btn">Previous</button>
-<button class="btn btn-default" id="next-btn">Next</button>
+<h3><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp; {% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}Sponsor this issue{% endif %}</h3>
 
-<button class="btn btn-default" id="zoom-in-btn">Zoom in</button>
-<button class="btn btn-default" id="zoom-out-btn">Zoom out</button>
+<hr>
+
+<div class="row">
+    <div class="col-md-12 btn-toolbar">
+        <div class="btn-group">
+          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Page <span id="page-number">1</span> of {{ object.pages.all.count }} <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            {% for page in object.pages.all %}
+            <li><a href="#{{ forloop.counter }}">Page {{ forloop.counter }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-default" id="prev-btn" onclick="prevPage()"><i class="fa fa-step-backward" aria-hidden="true"></i> &nbsp; Previous page</button>
+            <button class="btn btn-default" id="next-btn" onclick="nextPage()">Next page &nbsp; <i class="fa fa-step-forward" aria-hidden="true"></i></button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-default" id="zoom-in-btn"><i class="fa fa-search-plus" aria-hidden="true"></i> &nbsp; Zoom in</button>
+            <button class="btn btn-default" id="zoom-out-btn"><i class="fa fa-search-minus" aria-hidden="true"></i> &nbsp; Zoom out</button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-default"><a href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}"> <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Issue PDF</a></button>
+            <button class="btn btn-default"><i class="fa fa-download" aria-hidden="true"></i> &nbsp; <a id="page-pdf" href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}">Page PDF</a></button>
+        </div>
+    </div>
+</div>
+
+
+
 <div id="viewer"></div>
 {% endblock %}
 
 {% block extra-js %}
 <script type="text/javascript">
+
+var page_pdfs = [
+{% for page in object.pages.all %}
+'{{ARCHIVE_BUCKET_URL}}{{ page.pdf }}',
+{% endfor %}
+];
+
 var viewer = OpenSeadragon({
     id: "viewer",
     previousButton: 'previous-btn',
-    nextButton: 'next-btn',
     zoomInButton: 'zoom-in-btn',
     zoomOutButton: 'zoom-out-btn',
     sequenceMode: true,
     showReferenceStrip: true,
-    tileSources: [
-    {% for page in object.pages.all %}
+});
+
+var pages = [{% for page in object.pages.all %}
     {
-    	type: 'image',
+        type: 'image',
         url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.image }}'
     },
-	{% endfor %}
-	]
+    {% endfor %}]
+
+var currentPage = 1
+var hashIndex = parseInt(location.hash.split('#')[1]);
+if (hashIndex) {
+    currentPage = hashIndex;
+}
+updatePage();
+
+function prevPage() {
+    if (currentPage > 1) {
+        currentPage = currentPage - 1;
+        updatePage();
+    }
+}
+function nextPage() {
+    if (currentPage < pages.length) {
+        currentPage = currentPage + 1;
+        updatePage();
+    }
+}
+
+function updatePage() {
+    viewer.close();
+    viewer.open(pages[currentPage - 1]);
+    window.location.hash = currentPage;
+
+    $('#page-number').html(currentPage);
+    $('#page-pdf').attr('href', page_pdfs[currentPage - 1]);
+
+    if (currentPage == pages.length) {
+        $('#next-btn').prop("disabled",true);
+    } else {
+        $('#next-btn').prop("disabled",false);
+    }
+    if (currentPage == 1) {
+        $('#prev-btn').prop("disabled",true);
+    } else {
+        $('#prev-btn').prop("disabled",false);
+    }
+}
+
+$(window).on('hashchange', function(){
+    var hashIndex = parseInt(location.hash.split('#')[1]);
+    currentPage = hashIndex;
+    updatePage();
 });
+
 </script>
 {% endblock %}

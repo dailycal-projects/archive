@@ -60,16 +60,18 @@ class Command(BaseCommand):
                         filepath = os.path.join(dir_path, filename)
                         scanned_file = File(open(filepath,'rb'))
                         page.scanned_img.save('', scanned_file)
-                        # Create a jpg
+                        # Do some format conversions
                         with TemporaryFile() as f:
+                            # Create a jpg
                             scan = Image.open(filepath)
                             scan.save(f, "JPEG")
                             page.image.save('', File(f))
-                        # Create pdf
-                        page.create_pdf(scanned_file)
-                        page.save()
+                            # And a PDF
+                            scan.save(f, "PDF")
+                            page.pdf.save('', File(f))
+                        print('   Done!'.format(filename))
                     else:
-                        print('Already imported {}'.format(filename))
+                        print('   Already imported!'.format(filename))
                 except ValueError:
                     print('Error: check filename format for {}'.format(filename))
 
