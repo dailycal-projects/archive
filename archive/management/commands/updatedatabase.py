@@ -35,6 +35,6 @@ class Command(BaseCommand):
                     issue, c = Issue.objects.get_or_create(date=date)
                     page.issue = issue
                     page.save()
-                    print()
+                    print('Created {}'.format(page))
                 else:
                     print('Already imported {}'.format(page))

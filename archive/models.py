@@ -51,7 +51,6 @@ class Page(models.Model):
 
 class Issue(models.Model):
     date = models.DateField(unique=True)
-    #pdf = models.FileField(null=True, upload_to=pdf_path)
     sponsor = models.CharField(
         max_length=200,
         null=True,
