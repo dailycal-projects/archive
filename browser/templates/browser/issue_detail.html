@@ -1,4 +1,5 @@
 {% extends 'browser/base.html' %}
+{% load static from staticfiles %}
 
 {% block title %}{{ object.date }} | {{ block.super }}{% endblock %}
 
@@ -15,23 +16,44 @@
     #page-number {
         font-weight: bold;
     }
+
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>{{ object.date|date:"l, F j, Y" }}</h1>
+<div class="row">
+    <div class="col-md-6 heading">
+        <ol class="breadcrumb">
+          <li><a href="{% url 'issue_archive' %}">Issues</a></li>
+          <li><a href="{% url 'issue_archive' %}#{{ object.date|date:'Y' }}">{{ object.date|date:'Y' }}</a></li>
+          <li><a href="{% url 'archive_month' year=object.date.year month=object.date|date:'m' %}">{{ object.date|date:"F" }}</a></li>
+          <li class="active">{{ object.date|date:"j" }}</li>
+        </ol>
 
-<p>
-{% with object.get_previous_by_date as issue %}
-<a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">&laquo; Previous issue</a>
-{% endwith %}
-&middot; 
-{% with object.get_next_by_date as issue %}
-<a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">Next issue &raquo;</a>
-{% endwith %}
-</p>
+        <h1>{{ object.date|date:"l, F j, Y" }}</h1>
+        <p><em>{% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}<a href="{% url 'sponsor' %}">Sponsor this issue</a>{% endif %}</em></p>
 
-<h3><i class="fa fa-pencil-square-o" aria-hidden="true"></i> &nbsp; {% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}Sponsor this issue{% endif %}</h3>
+        <p>
+        {% with object.get_previous_by_date as issue %}
+        <a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">&laquo; Previous issue</a>
+        {% endwith %}
+        &middot; 
+        {% with object.get_next_by_date as issue %}
+        <a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">Next issue &raquo;</a>
+        {% endwith %}
+        </p>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <a id="fb-link" class="btn btn-default"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                <a id="twitter-link" class="btn btn-default"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+            </div>
+            <input id="page-url" readonly type="text" class="form-control" value="archives.dailycal.org{% url 'issue_detail' year=object.date.year month=object.date|date:'m' day=object.date|date:'d' %}">
+            <span class="input-group-btn">
+                <button data-clipboard-target="#page-url" class="btn btn-default" type="button"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
+            </span>
+        </div>
+    </div>
+</div>
 
 <hr>
 
@@ -59,19 +81,20 @@
         </div>
 
         <div class="btn-group">
-            <button class="btn btn-default"><a href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}"> <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Issue PDF</a></button>
-            <button class="btn btn-default"><i class="fa fa-download" aria-hidden="true"></i> &nbsp; <a id="page-pdf" href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}">Page PDF</a></button>
+            <a class="btn btn-default" href="{{ ARCHIVE_BUCKET_URL }}{{ object.pdf }}"> <i class="fa fa-download" aria-hidden="true"></i> &nbsp; Issue PDF</a>
+            <a class="btn btn-default" id="page-pdf"><i class="fa fa-download" aria-hidden="true"></i> &nbsp; Page PDF</a>
         </div>
     </div>
 </div>
-
-
 
 <div id="viewer"></div>
 {% endblock %}
 
 {% block extra-js %}
+<script src="{% static 'browser/js/clipboard.min.js' %}"></script>
 <script type="text/javascript">
+
+new Clipboard('.btn');
 
 var page_pdfs = [
 {% for page in object.pages.all %}
@@ -119,8 +142,12 @@ function updatePage() {
     viewer.close();
     viewer.open(pages[currentPage - 1]);
     window.location.hash = currentPage;
+    var url = window.location.href
 
     $('#page-number').html(currentPage);
+    $('#page-url').attr('value', url);
+    $('#fb-link').attr('href', 'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url))
+    $('#twitter-link').attr('href', 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(url))
     $('#page-pdf').attr('href', page_pdfs[currentPage - 1]);
 
     if (currentPage == pages.length) {

@@ -1,11 +1,54 @@
 {% extends 'browser/base.html' %}
 
-{% block content %}
-<h1>Issue archive</h1>
-<ul>
-{% for issue in object_list %}
-<li><p><a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">{{ issue.date }}</a></p></li>
-{% endfor %}
-</ul>
+{% block extra-css %}
+<style>
+.table>tbody>tr>td.month-cell {
+	width: 7.5%;
+	text-align: center;
+	padding: 0;
+	color: lightgrey;
+	vertical-align: middle;
+	font-weight: 300;
+}
+.table>tbody>tr>td.month-cell.active {
+	font-weight: 600;
+	color: #000;
+	background-color: #393966;
+}
+.table>tbody>tr>td.month-cell.active a {
+	color: #fff;
+}
 
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+	padding: 2px;
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+<div class="col-md-8">
+<h1>All issues</h1>
+<p>The Daily Californian has been continually published since 1871, but we're starting by digitizing and publishing issues <a href="#1964">from 1964</a>. This page will be continually uploaded as we work through more years. You can help us fill in the grid by <a href="">sponsoring the digitization</a> of a month or year.</p>
+
+<br>
+
+<table class="table">
+<tbody>
+{% for year, months in years.items|dictsortreversed:0 %}
+<tr id={{year}}>
+	<th>{{ year }}</th>
+	{% for month in months %}
+		{% if month.1 %}
+			<td class="month-cell active"><a href="{{ month.1 }}">{{ month.0|upper }}</a></td>
+		{% else %}
+			<td class="month-cell">{{ month.0|upper }}</td>
+		{% endif %}
+	{% endfor %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
+
+</div>
 {% endblock %}

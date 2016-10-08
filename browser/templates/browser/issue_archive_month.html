@@ -11,24 +11,36 @@
 	.prev, .picker-switch, .next {
         display: none;
     }
+    .day.disabled {
+        color: lightgrey;
+        font-weight: 300;
+    }
+    .day {
+        background-color: #fcf8e3;
+        font-weight: bold;
+    }
 </style>
 {% endblock %}
 
 {% block content %}
-<h1>Issue archive for {{ month|date:"F Y" }}</h1>
+<div class="col-md-8">
+    <h1>Issues published in {{ month|date:"F Y" }}</h1>
+    <p>
+    {% if previous_month %}<a href="{% url 'archive_month' previous_month.year previous_month|date:'m' %}">&laquo; Previous month</a>{% else %}<span class="disabled">&laquo; Previous month</span>{% endif %} &middot; {% if next_month %}<a href="{% url 'archive_month' next_month.year next_month|date:'m' %}">Next month &raquo;</a>{% else %}<span class="disabled">Next month &raquo;</span>{% endif %}
+    </p>
 
-<hr>
+    <br>
 
-<div style="overflow:hidden;">
-    <div class="form-group">
-        <div class="row">
-            <div class="col-md-9">
-                <div id="calendar""></div>
+    <div style="overflow:hidden;">
+        <div class="form-group">
+            <div class="row">
+                <div class="col-md-9">
+                    <div id="calendar""></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
 {% endblock %}
 
 {% block extra-js %}

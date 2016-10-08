@@ -1,0 +1,73 @@
+{% extends 'browser/base.html' %}
+{% load static from staticfiles %}
+
+{% block extra-css %}
+<style>
+.top {
+    background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url("{% static 'browser/img/sather.jpg' %}");
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding: 100px 0 70px 0;
+}
+.heading {
+    text-align: center;
+    margin-bottom: 100px;
+}
+.heading a.btn {
+    margin: 0 20px;
+    font-size: 24px;
+}
+.top h1 {
+    font-weight: 300;
+    text-transform: uppercase;
+
+    font-size: 60px;
+}
+.btn-dc {
+    border-radius: 0;
+    border: none;
+    background-color: #393966;
+    color: #fff;
+    font-weight: 300;
+    text-transform: uppercase;
+}
+.btn-dc:hover {
+    background-color: black;
+    color: #fff;
+}
+.footer {
+    margin-top: 0;
+}
+</style>
+{% endblock %}
+
+{% block top %}
+<div class="top">
+    <div class="container">
+        <div class="row heading">
+        <h1>The Daily Californian Archive</h1>
+        <p class="lead">A digital record of UC Berkeley's student newspaper, in print since 1871. <br>This is an ongoing digitization effort. So far, we've completed {{ issue_count }} issues, totaling {{ page_count }} pages.</p>
+        <br>
+        <a href="{% url 'issue_archive' %}" class="btn btn-dc btn-lg">Browse by year</a> <a href="{{ random_issue_url }}" class="btn btn-dc btn-lg">Random issue</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Explore the archive</h2>
+                <p>We're starting by making available all issues published in 1964 — the year of the Free Speech Movement. More issues will be added as they're completed. <a href="{% url 'issue_archive' %}">View all issues &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>Sponsor an issue</h2>
+                <p>Converting microfilm to digital images is a time-consuming, manual process. Support us by donating to sponsor the digitization of a month or year of your choosing. <a href="{% url 'sponsor' %}">Find out more &raquo;</a></p>
+            </div>
+            <div class="col-md-4">
+                <h2>About this project</h2>
+                <p>This site will eventually host a searchable archive of every issue the Daily Californian has published since it began printing in 1871. <a href="{% url 'about' %}">Read about our plans &raquo;</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block container %}{% endblock %}

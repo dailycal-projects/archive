@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}The Daily Californian Archives{% endblock %}</title>
+    <title>{% block title %}The Daily Californian Archive{% endblock %}</title>
     {% block meta %}
         <meta charset="utf-8" />
         <meta name="description" content="{% block description %}{% endblock %}" />
@@ -34,6 +34,7 @@
 
     {% block css %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'browser/css/style.css' %}"/>
     {% endblock %}
 
@@ -57,8 +58,8 @@
     {% endblock %}
     <footer class="footer">
       <div class="container">
-        <p>Questions, comments or corrections? Email <a href="mailto:projects@dailycal.org">projects@dailycal.org</a>. Data and code is open-source on <a href="https://github.com/dailycal-projects">GitHub</a>. <br>
-        Support innovative, independent student journalism. <a href="https://donate.dailycal.org/">Donate today.</a> <br>
+        <p>Questions, comments or corrections? Email <a href="mailto:archive@dailycal.org">archive@dailycal.org</a>. This project is open-source on <a href="https://github.com/dailycal-projects">GitHub</a>. <br>
+        Support the archives by <a href="{% url 'sponsor' %}">sponsoring an issue</a>. <br>
         Copyright © 2016 The Daily Californian, The Independent Berkeley Student Publishing Co., Inc.</p>
       </div>
     </footer>

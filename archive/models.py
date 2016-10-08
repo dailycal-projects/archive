@@ -5,34 +5,30 @@ from django.db import models
 from django.core.files import File
 from tempfile import TemporaryFile
 
-def tif_path(instance, filepath):
-    return '{}.tif'.format(
-        instance.canonical_path)
-
-def jpg_path(instance, filepath):
-    return '{}.jpg'.format(
-        instance.canonical_path)
-
-def pdf_path(instance, filepath):
-    return '{}.pdf'.format(
-        instance.canonical_path)
 
 class Page(models.Model):
+    """A single page from an issue."""
+
     date = models.DateField()
     page_number = models.IntegerField()
-    scanned_img = models.ImageField(null=True, upload_to=tif_path)
-    image = models.ImageField(null=True, upload_to=jpg_path)
-    pdf = models.FileField(null=True, upload_to=pdf_path)
     text = models.TextField()
     issue = models.ForeignKey('Issue', null=True, related_name='pages')
 
     @property
-    def canonical_path(self):
+    def path(self):
         return '{0}/{1}/{2}/dailycal_{0}{1}{2}_{3}'.format(
             self.date.year,
             self.date.strftime('%m'),
             self.date.strftime('%d'),
             format(self.page_number,'02'))
+
+    @property
+    def image(self):
+        return self.path + '.jpg'
+    
+    @property
+    def pdf(self):
+        return self.path + '.pdf'
 
     def ocr(self):
         scan = Image.open(self.scanned_img)
@@ -50,21 +46,21 @@ class Page(models.Model):
 
     class Meta:
         ordering = ['-date','page_number']
+        unique_together = (('date', 'page_number'),)
 
 
 class Issue(models.Model):
     date = models.DateField(unique=True)
-    pdf = models.FileField(null=True, upload_to=pdf_path)
+    #pdf = models.FileField(null=True, upload_to=pdf_path)
     sponsor = models.CharField(
         max_length=200,
         null=True,
         blank=False
     )
 
+    """
     def create_pdf(self):
-        """
-        Concatenate PDFs from individual pages.
-        """
+
         outfile = PdfFileMerger()
         for page in self.pages.all():
             if not page.pdf:
@@ -73,7 +69,7 @@ class Issue(models.Model):
 
         with TemporaryFile() as f:
             outfile.write(f)
-            self.pdf.save('', File(f))
+            self.pdf.save('', File(f))"""
 
     @property
     def canonical_path(self):
