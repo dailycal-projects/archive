@@ -1,7 +1,8 @@
 .DS_Store
 *.pyc
 scans/
-.env
+www/*
+
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
