@@ -7,7 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fu2p_g8*-c69cr3n!ws6y4ul5_fx^05m0=96!fjwes_w)bdlyl'
+SECRET_KEY = '1q+ir!8(zzi%tp6=*7d&m_msh9x%qcfm0cyyg6qlft9rxq96y#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -23,7 +23,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages',
     'archive',
     'browser'
 ]
@@ -68,7 +67,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'dcarchive',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -109,6 +111,3 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-AWS_STORAGE_BUCKET_NAME = 'dailycal-archive'
