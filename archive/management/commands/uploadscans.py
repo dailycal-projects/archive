@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Connect to S3
         s3 = boto3.resource('s3')
-        bucket = s3.Bucket('dailycal-archive')
+        bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME)
         dir_path = os.path.join(
             settings.BASE_DIR, 'scans')
         for filename in os.listdir(dir_path):

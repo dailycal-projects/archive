@@ -122,5 +122,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 AWS_STORAGE_BUCKET_NAME = 'dailycal-archive-static'
+AWS_S3_HOST = 's3-us-west-1.amazonaws.com'
 STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATIC_URL = '/static/'
+
+# App-specific settings
+
+ARCHIVE_BUCKET_NAME = 'dailycal-archive'
