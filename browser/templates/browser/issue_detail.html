@@ -16,7 +16,6 @@
     #page-number {
         font-weight: bold;
     }
-
 </style>
 {% endblock %}
 
@@ -35,11 +34,19 @@
 
         <p>
         {% with object.get_previous_by_date as issue %}
+        {% if issue %}
         <a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">&laquo; Previous issue</a>
+        {% else %}
+        &laquo; Previous issue
+        {% endif %}
         {% endwith %}
         &middot; 
         {% with object.get_next_by_date as issue %}
+        {% if issue %}
         <a href="{% url 'issue_detail' year=issue.date.year month=issue.date|date:'m' day=issue.date|date:'d' %}">Next issue &raquo;</a>
+        {% else %}
+        Next issue &raquo;
+        {% endif %}
         {% endwith %}
         </p>
         <div class="input-group">
@@ -91,6 +98,7 @@
 {% endblock %}
 
 {% block extra-js %}
+<script src="{% static 'browser/js/openseadragon.min.js' %}"></script>
 <script src="{% static 'browser/js/clipboard.min.js' %}"></script>
 <script type="text/javascript">
 
@@ -107,14 +115,14 @@ var viewer = OpenSeadragon({
     previousButton: 'previous-btn',
     zoomInButton: 'zoom-in-btn',
     zoomOutButton: 'zoom-out-btn',
-    sequenceMode: true,
-    showReferenceStrip: true,
+    showHomeControl: false,
+    showFullPageControl: false,
 });
 
 var pages = [{% for page in object.pages.all %}
     {
         type: 'image',
-        url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.image }}'
+        url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.jpg }}'
     },
     {% endfor %}]
 

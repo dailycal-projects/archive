@@ -1,7 +1,10 @@
 .DS_Store
 *.pyc
 scans/
-www/*
+processed_files/
+build/
+static/
+django.log
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*

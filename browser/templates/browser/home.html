@@ -50,7 +50,7 @@
         <h1>The Daily Californian Archive</h1>
         <p class="lead">A digital record of UC Berkeley's student newspaper, in print since 1871. <br>This is an ongoing digitization effort. So far, we've completed {{ issue_count }} issues, totaling {{ page_count }} pages.</p>
         <br>
-        <a href="{% url 'issue_archive' %}" class="btn btn-dc btn-lg">Browse by year</a> <a href="{{ random_issue_url }}" class="btn btn-dc btn-lg">Random issue</a>
+        <a href="{% url 'issue_archive' %}" class="btn btn-dc btn-lg">Browse by year</a> <a id="random-link" class="btn btn-dc btn-lg">Random issue</a>
         </div>
 
         <div class="row">
@@ -71,3 +71,17 @@
 </div>
 {% endblock %}
 {% block container %}{% endblock %}
+
+{% block extra-js %}
+<script>
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+var random_issue_urls = {{ random_issue_urls|safe }};
+var random_index = getRandomInt(0, random_issue_urls.length);
+$('#random-link').attr('href', random_issue_urls[random_index]);
+</script>
+{% endblock %}

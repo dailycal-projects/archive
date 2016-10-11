@@ -13,13 +13,28 @@
 	.prev, .picker-switch, .next {
         display: none;
     }
-    .day.disabled {
+    #calendar td {
+        border-radius: 0;
+    }
+    #calendar .day.disabled {
         color: lightgrey;
         font-weight: 300;
+        background-color: #fff;
     }
-    .day {
-        background-color: #fcf8e3;
-        font-weight: bold;
+    #calendar .day.disabled:hover {
+        color: lightgrey;
+        font-weight: 300;
+        background-color: #fff;
+        text-decoration: none;
+    }
+    #calendar .day {
+        background-color: #393966;
+        color: #fff;
+    }
+    #calendar .day:hover {
+        background-color: #393966;
+        color: #fff;
+        text-decoration: underline;
     }
 </style>
 {% endblock %}
@@ -53,23 +68,23 @@
 <script src="{% static 'browser/js/moment.min.js' %}"></script>
 <script src="{% static 'browser/js/bootstrap-datetimepicker.min.js' %}"></script>
 <script type="text/javascript">
-        var minDate = moment('{{ month }}');
-        var maxDate = minDate.clone().add(1, "months").subtract(1, 'days');
-        var enabledDates = [
-        {% for date in date_list %}
-        moment('{{ date }}'),
-        {% endfor %}
-        ];
-        $(function () {
-            var calendar = $('#calendar').datetimepicker({
-                inline: true,
-                format: 'MM/DD',
-                maxDate: maxDate,
-                minDate: minDate,
-                enabledDates: enabledDates
-            }).on('dp.change', function(e) {
-                window.location.assign(window.location + e.date.format('DD'));
-            });
+    var minDate = moment('{{ month }}');
+    var maxDate = minDate.clone().add(1, "months").subtract(1, 'days');
+    var enabledDates = [
+    {% for date in date_list %}
+    moment('{{ date }}'),
+    {% endfor %}
+    ];
+    $(function () {
+        var calendar = $('#calendar').datetimepicker({
+            inline: true,
+            format: 'MM/DD',
+            maxDate: maxDate,
+            minDate: minDate,
+            enabledDates: enabledDates
+        }).on('dp.change', function(e) {
+            window.location.assign(window.location + e.date.format('DD'));
         });
-    </script>
+    });
+</script>
 {% endblock %}

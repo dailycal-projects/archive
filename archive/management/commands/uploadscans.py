@@ -1,10 +1,12 @@
 import os
 import boto3
+import logging
 import datetime
 from PIL import Image
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from archive.models import Page, Issue
+logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = "Take scanned .tif files, generate .jpgs and .pdfs and upload to \
@@ -25,7 +27,7 @@ class Command(BaseCommand):
             settings.BASE_DIR, 'scans')
         for filename in os.listdir(dir_path):
             if filename.endswith('.tif'):
-                print(filename)
+                logger.debug(filename)
                 try:
                     # Extract date and page number from filename
                     year, month, day, page = filename.split('-')
@@ -43,7 +45,13 @@ class Command(BaseCommand):
                         )
                         page.issue = issue
                         page.save()
-                        # Save the scan
+
+                        # Check if the issue folder exists. If not, create it.
+                        path = os.path.join(settings.PROCESSED_FILES_DIR, issue.directory)
+                        if not os.path.exists(path):
+                            os.makedirs(path)
+
+                        # Upload the scan
                         filepath = os.path.join(dir_path, filename)
                         bucket.upload_file(filepath, page.path + '.tif')
                         filepath = os.path.join(dir_path, filename)
@@ -53,17 +61,17 @@ class Command(BaseCommand):
                         # so we're just going to create our own
 
                         # Create a jpg
-                        jpg_path = os.path.join(dir_path, 'temp.jpg')
+                        jpg_path = os.path.join(settings.PROCESSED_FILES_DIR, page.jpg)
                         with open(jpg_path, 'wb') as f:
                             scan.save(f, 'JPEG')
-                        bucket.upload_file(jpg_path, page.image)
+                        bucket.upload_file(jpg_path, page.jpg)
                         # Create a pdf
-                        pdf_path = os.path.join(dir_path, 'temp.pdf')
+                        pdf_path = os.path.join(settings.PROCESSED_FILES_DIR, page.pdf)
                         with open(pdf_path, 'wb') as f:
                             scan.save(f, 'PDF')
                         bucket.upload_file(pdf_path, page.pdf)
-                        print('   Done!'.format(page))
+                        logger.info('   Uploaded')
                     else:
-                        print('   Already uploaded!'.format(page))
-                except:
-                    print('Error: check filename format for {}'.format(filename))
+                        logger.debug('   Already uploaded')
+                except ValueError:
+                    logger.error('   Invalid filename format')

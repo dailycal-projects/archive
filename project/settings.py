@@ -2,6 +2,7 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROCESSED_FILES_DIR = os.path.join(BASE_DIR, 'processed_files')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -24,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'storages',
+    'bakery',
     'archive',
     'browser'
 ]
@@ -60,6 +62,57 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+# Logging
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'filters': {
+        'require_debug_false': {
+            '()': 'django.utils.log.RequireDebugFalse'
+        },
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'logging.NullHandler',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'logfile': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'django.log'),
+            'maxBytes': 1024*1024*5,  # 5MB
+            'backupCount': 0,
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'INFO',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': []
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s|%(asctime)s|%(module)s|%(message)s',
+            'datefmt': "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(message)s'
+        },
+    },
+    'loggers': {
+        'archive.management': {
+            'handlers': ['console', 'logfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        }
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
@@ -121,11 +174,29 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-AWS_STORAGE_BUCKET_NAME = 'dailycal-archive-static'
-AWS_S3_HOST = 's3-us-west-1.amazonaws.com'
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+#AWS_STORAGE_BUCKET_NAME = 'dailycal-archive-static'
+#AWS_S3_HOST = 's3-us-west-1.amazonaws.com'
+#STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # App-specific settings
 
 ARCHIVE_BUCKET_NAME = 'dailycal-archive'
+
+# Bakery settings
+
+BUILD_DIR = os.path.join(BASE_DIR, 'build')
+BAKERY_VIEWS = (
+    'browser.views.HomeView',
+    'browser.views.SponsorView',
+    'browser.views.AboutView',
+    'browser.views.MonthListView',
+    'browser.views.MonthArchiveView',
+    'browser.views.IssueDetailView',
+)
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_BUCKET_NAME = os.getenv('AWS_WEBSITE_BUCKET_NAME')
+AWS_S3_REGION_NAME = os.getenv('AWS_S3_REGION_NAME')
+AWS_S3_HOST = 's3-%s.amazonaws.com' % AWS_S3_REGION_NAME

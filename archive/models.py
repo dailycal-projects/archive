@@ -1,6 +1,6 @@
 import pytesseract
+from django.urls import reverse
 from PIL import Image
-from PyPDF2 import PdfFileMerger
 from django.db import models
 from django.core.files import File
 from tempfile import TemporaryFile
@@ -23,7 +23,7 @@ class Page(models.Model):
             format(self.page_number,'02'))
 
     @property
-    def image(self):
+    def jpg(self):
         return self.path + '.jpg'
     
     @property
@@ -34,12 +34,6 @@ class Page(models.Model):
         scan = Image.open(self.scanned_img)
         self.text = pytesseract.image_to_string(scan, lang='ENG')
         self.save()
-
-    def create_pdf(self, image):
-        with TemporaryFile() as f:
-            scan = Image.open(image)
-            scan.save(f, "PDF")
-            self.pdf.save('', File(f))
 
     def __str__(self):
         return '{}: p. {}'.format(self.date, self.page_number)
@@ -56,26 +50,32 @@ class Issue(models.Model):
         null=True,
         blank=False
     )
-
-    """
-    def create_pdf(self):
-
-        outfile = PdfFileMerger()
-        for page in self.pages.all():
-            if not page.pdf:
-                page.create_pdf()
-            outfile.append(page.pdf.file)
-
-        with TemporaryFile() as f:
-            outfile.write(f)
-            self.pdf.save('', File(f))"""
+    pdf_created = models.BooleanField(default=False)
 
     @property
-    def canonical_path(self):
-        return '{0}/{1}/{2}/dailycal_{0}{1}{2}'.format(
-            self.date.year,
-            self.date.strftime('%m'),
-            self.date.strftime('%d'))
+    def date_parts_list(self):
+        """List of year, month, day."""
+        return [self.date.strftime('%Y'), self.date.strftime('%m'), self.date.strftime('%d')]
+
+    @property
+    def date_parts_dict(self):
+        return {
+            'year': self.date.strftime('%Y'),
+            'month': self.date.strftime('%m'),
+            'day': self.date.strftime('%d')
+        }
+    
+    @property
+    def directory(self):
+        return '{0}/{1}/{2}'.format(*self.date_parts_list)
+
+    @property
+    def path(self):
+        return '{0}/{1}/{2}/dailycal_{0}{1}{2}_issue'.format(*self.date_parts_list)
+
+    @property
+    def pdf(self):
+        return self.path + '.pdf'
 
     def __str__(self):
         return '{}'.format(self.date)
