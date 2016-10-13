@@ -2,7 +2,8 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-PROCESSED_FILES_DIR = os.path.join(BASE_DIR, 'processed_files')
+RAW_DIR = os.path.join(BASE_DIR, 'raw')
+PROCESSED_DIR = os.path.join(BASE_DIR, 'processed')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -24,7 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'storages',
+    'django.contrib.humanize',
     'bakery',
     'archive',
     'browser'
@@ -174,15 +175,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
-#AWS_STORAGE_BUCKET_NAME = 'dailycal-archive-static'
-#AWS_S3_HOST = 's3-us-west-1.amazonaws.com'
-#STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
 
 # App-specific settings
 
 ARCHIVE_BUCKET_NAME = 'dailycal-archive'
+RAW_BUCKET_NAME = 'dailycal-archive-raw'
 
 # Bakery settings
 
@@ -195,6 +194,7 @@ BAKERY_VIEWS = (
     'browser.views.MonthArchiveView',
     'browser.views.IssueDetailView',
 )
+
 AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
 AWS_BUCKET_NAME = os.getenv('AWS_WEBSITE_BUCKET_NAME')

@@ -1,10 +1,11 @@
 {% extends 'browser/base.html' %}
 {% load static from staticfiles %}
+{% load humanize %}
 
 {% block extra-css %}
 <style>
 .top {
-    background: linear-gradient( rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7) ), url("{% static 'browser/img/sather.jpg' %}");
+    background: linear-gradient( rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.8) ), url("{% static 'browser/img/sather.jpg' %}");
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -13,17 +14,20 @@
 }
 .heading {
     text-align: center;
-    margin-bottom: 100px;
-}
-.heading a.btn {
-    margin: 0 20px;
-    font-size: 24px;
 }
 .top h1 {
-    font-weight: 300;
     text-transform: uppercase;
-
     font-size: 60px;
+}
+a.btn {
+    font-size: 24px;
+}
+.buttons {
+    margin: 50px 0 100px 0;
+    text-align: center;
+}
+.lead {
+    font-weight: 400;
 }
 .btn-dc {
     border-radius: 0;
@@ -47,24 +51,34 @@
 <div class="top">
     <div class="container">
         <div class="row heading">
-        <h1>The Daily Californian Archive</h1>
-        <p class="lead">A digital record of UC Berkeley's student newspaper, in print since 1871. <br>This is an ongoing digitization effort. So far, we've completed {{ issue_count }} issues, totaling {{ page_count }} pages.</p>
-        <br>
-        <a href="{% url 'issue_archive' %}" class="btn btn-dc btn-lg">Browse by year</a> <a id="random-link" class="btn btn-dc btn-lg">Random issue</a>
+            <h1>The Daily Californian Archive</h1>
+            <p class="lead">A digital record of UC Berkeley's student newspaper, in print since 1871. <br>This is an ongoing digitization effort. So far, we've completed {{ issue_count|intcomma }} issues, totaling {{ page_count|intcomma }} pages.</p>
+        </div>
+
+        <div class="row buttons">
+            <div class="col-md-3 col-md-offset-3">
+                <a href="{% url 'issue_archive' %}" class="btn btn-dc btn-lg">Issues by year</a>
+            </div>
+            <div class="col-md-3">
+                <a id="random-link" class="btn btn-dc btn-lg">Random issue</a>
+            </div>
         </div>
 
         <div class="row">
             <div class="col-md-4">
-                <h2>Explore the archive</h2>
-                <p>We're starting by making available all issues published in 1964 — the year of the Free Speech Movement. More issues will be added as they're completed. <a href="{% url 'issue_archive' %}">View all issues &raquo;</a></p>
+                <h2>Explore 1964</h2>
+                <p>We're starting by making available all issues published in 1964, the year of the Free Speech Movement on Berkeley's campus.</p>
+                <p><a href="{% url 'issue_archive' %}#1964">View issues from 1964 &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>Sponsor an issue</h2>
-                <p>Converting microfilm to digital images is a time-consuming, manual process. Support us by sponsoring the digitization of a month or year. <a href="{% url 'sponsor' %}">Find out more &raquo;</a></p>
+                <p>Converting microfilm to digital images is a time-consuming, manual process. Support us by sponsoring the digitization of a month or year.</p>
+                <p><a href="{% url 'sponsor' %}">Find out more &raquo;</a></p>
             </div>
             <div class="col-md-4">
                 <h2>About this project</h2>
-                <p>This site will eventually host a searchable archive of every issue the Daily Californian has published since it began printing in 1871. <a href="{% url 'about' %}">Read about our plans &raquo;</a></p>
+                <p>This site will eventually host a searchable archive of every issue the Daily Californian has published since it began printing in 1871.</p>
+                <p><a href="{% url 'about' %}">Read about our plans &raquo;</a></p>
             </div>
         </div>
     </div>

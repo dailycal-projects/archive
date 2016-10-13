@@ -15,16 +15,16 @@ h3 {
     font-size: 20px;
     text-align: left;
 }
-
-.top {
-    background: #2d2d51;
-    color: #fff;
-}
-.top a {
-    color: #fff;
+a {
+    color: #393966;
     font-weight: 600;
 }
-
+.top {
+    background: #2d2d51;
+}
+.top a {
+    font-weight: 600;
+}
 p {
     font-weight: 300;
     font-size: 16px;
@@ -57,6 +57,7 @@ section {
     font-family: Georgia;
     font-variant: small-caps;
     color: #fff;
+    font-weight: 400;
 }
 .navbar-dc .navbar-nav li a {
     color: #fff;
@@ -86,6 +87,8 @@ section {
 }
 .breadcrumb {
     margin-top: 20px;
+    background: none;
+    padding: 8px 0px;
 }
 .footer {
   width: 100%;

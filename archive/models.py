@@ -23,6 +23,10 @@ class Page(models.Model):
             format(self.page_number,'02'))
 
     @property
+    def tif(self):
+        return self.path + '.tif'
+
+    @property
     def jpg(self):
         return self.path + '.jpg'
     
