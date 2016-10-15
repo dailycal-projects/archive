@@ -6,11 +6,11 @@
     <title>{% block title %}The Daily Californian Archive{% endblock %}</title>
     {% block meta %}
         <meta charset="utf-8" />
-        <meta name="description" content="{% block description %}{% endblock %}" />
-        <meta name="keywords" content="{% block keywords %}dailycal, Daily Californian, Daily Cal{% endblock %}" />
+        <meta name="description" content="{% block description %}An online archive of historical issues of the Daily Californian, UC Berkeley's student newspaper.{% endblock %}" />
+        <meta name="keywords" content="{% block keywords %}dailycal, Daily Californian, Daily Cal, archive, history, microfilm, library, Berkeley{% endblock %}" />
         <link rel='shortcut icon' href='http://www.dailycal.org/assets/uploads/2012/02/favicon.png'/>
         <meta name="twitter:card" content="summary"/>
-        <meta name="twitter:description" content=""/>
+        <meta name="twitter:description" content="An online archive of historical issues of the Daily Californian."/>
         <meta name="twitter:title" content="The Daily Californian"/>
         <meta name="twitter:site" content="@dailycal"/>
         <meta name="twitter:domain" content="The Daily Californian"/>
@@ -19,7 +19,7 @@
         <meta property="og:locale" content="en_US"/>
         <meta property="og:type" content="article"/>
         <meta property="og:title" content="The Daily Californian"/>
-        <meta property="og:url" content=""/>
+        <meta property="og:url" content="An online archive of historical issues of the Daily Californian."/>
         <meta property="og:type" content="article"/>
         <meta property="og:description" content=""/>
         <meta property="og:image" content="http://i0.wp.com/www.dailycal.org/assets/uploads/2014/04/fbimage1410x738.png"/>
@@ -33,8 +33,8 @@
     {% endblock %}
 
     {% block css %}
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Lato:300,400|Work+Sans:300,400" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'browser/css/bootstrap.min.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,600" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'browser/font-awesome-4.6.3/css/font-awesome.min.css' %}"/>
     <link rel="stylesheet" type="text/css" href="{% static 'browser/css/style.css' %}"/>
     {% endblock %}

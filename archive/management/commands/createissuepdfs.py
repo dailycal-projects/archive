@@ -23,27 +23,29 @@ class Command(BaseCommand):
 
             # Make sure the issue directory exists locally
             local_path = os.path.join(
-                settings.PROCESSED_FILES_DIR, issue.directory)
+                settings.PROCESSED_DIR, issue.directory)
             if not os.path.exists(local_path):
                 os.makedirs(local_path)
             
             outfile = PdfFileMerger()
 
-            # Download all the page PDFs
+            # For all the pages in this issue
             for page in issue.pages.all():
-                page_path = os.path.join(
-                    settings.PROCESSED_FILES_DIR, page.pdf)
-                # If we don't already have it
-                if not os.path.exists(page_path):
+                # If we don't already have the PDF
+                if not page.has_pdf:
                     logger.info(
                         'Downloading page {}'.format(page.page_number))
-                    page_pdf = open(page_path, 'w+')
-                    # Download it
-                    bucket.download_file(page.pdf, page_path)
-                outfile.append(page_path)
+                    #page_pdf = open(page.local_pdf_path, 'w+')
+                # Try to create it
+                elif page.has_tif:
+                    page.save_pdf()
+                # Or download it
+                else:
+                    bucket.download_file(page.pdf, page.local_pdf_path)
+                outfile.append(page.local_pdf_path)
 
             # Write the issue PDF
-            issue_path = os.path.join(settings.PROCESSED_FILES_DIR, issue.pdf)
+            issue_path = os.path.join(settings.PROCESSED_DIR, issue.pdf)
             issue_pdf = open(issue_path, 'w+')
             outfile.write(issue_path)
 

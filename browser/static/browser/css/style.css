@@ -19,15 +19,9 @@ a {
     color: #393966;
     font-weight: 600;
 }
-.top {
-    background: #2d2d51;
-}
-.top a {
-    font-weight: 600;
-}
 p {
     font-weight: 300;
-    font-size: 16px;
+    font-size: 18px;
 }
 .center {
     text-align: center !important;
@@ -70,21 +64,10 @@ section {
     text-decoration: underline;
     background-color: #393966;
 }
-/* Overriding mobile behavior */
-.navbar-dc .navbar-header {
-    float: left !important;
+.navbar-dc .icon-bar {
+    background-color: #fff;
 }
-.navbar-dc .navbar-nav {
-    float: left;
-    margin: 0;
-}
-.navbar-dc .navbar-nav>li {
-    float: left;
-}
-.navbar-dc .navbar-nav>li>a {
-    padding-top: 15px;
-    padding-bottom: 15px;
-}
+
 .breadcrumb {
     margin-top: 20px;
     background: none;

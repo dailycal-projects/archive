@@ -180,8 +180,8 @@ STATIC_URL = '/static/'
 
 # App-specific settings
 
-ARCHIVE_BUCKET_NAME = 'dailycal-archive'
-RAW_BUCKET_NAME = 'dailycal-archive-raw'
+ARCHIVE_BUCKET_NAME = os.getenv('ARCHIVE_BUCKET_NAME')
+RAW_BUCKET_NAME = os.getenv('RAW_BUCKET_NAME')
 
 # Bakery settings
 
