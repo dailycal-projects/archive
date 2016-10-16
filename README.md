@@ -28,4 +28,10 @@ This project interacts with S3 to host the processed files *and* to host the "ba
 
 You can move images through the processing and archival pipeline with a series of management commands.
 
+* `updatedatabase`: Sync the database of pages and issues to the files already in the archival bucket
+* `downloadrawscans`: Download any new items from the raw S3 bucket
+* `processrawscans`: Check if the raw scans match our expected name format, and if so, move them to the archived files directory
+
 # Publish the website
+
+The site uses django-bakery to generate static pages for all the pages and issues. Eventually, as we add the ability to crowdsource text corrections and tags, this will need to change. For now, though, deploy the site using `python manage.py build` and `python manage.py publish`.
