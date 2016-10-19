@@ -29,7 +29,7 @@ class Command(BaseCommand):
 
         for filename in os.listdir(settings.RAW_DIR):
             if filename.endswith('.tif'):
-                logger.debug('Processing {}'.format(filename))
+                logger.debug('Processing %s' % filename)
 
                 # Extract date and page number from filename
                 tif_re = re.compile(r'^.*(\d{4})[-.](\d{2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2}).tif')
@@ -69,33 +69,20 @@ class Command(BaseCommand):
                             settings.PROCESSED_DIR, page.tif)
                         shutil.copyfile(raw_path, tif_path)
 
-                        # Upload the scan
-                        bucket.upload_file(tif_path, page.tif)
+                        # Process
+                        page.process()
 
-                        scan = Image.open(tif_path)
-
-                        # Create a jpg
-                        jpg_path = os.path.join(
-                            settings.PROCESSED_DIR, page.jpg)
-                        with open(jpg_path, 'wb') as f:
-                            scan.save(f, 'JPEG')
-                        bucket.upload_file(jpg_path, page.jpg)
-
-                        # Create a pdf
-                        pdf_path = os.path.join(
-                            settings.PROCESSED_DIR, page.pdf)
-                        with open(pdf_path, 'wb') as f:
-                            scan.save(f, 'PDF')
-                        bucket.upload_file(pdf_path, page.pdf)
+                        # Upload
+                        page.upload()
 
                         # Delete the scan from the raw directory
                         os.remove(raw_path)
 
-                        logger.info('Uploaded {}'.format(page))
+                        logger.info('Processed {}'.format(page))
 
                     # If the page is already in the database
                     else:
-                        logger.debug('Already uploaded')
+                        logger.debug('Already in database')
                 # No match
                 else:
                     logger.error('Invalid filename format')
