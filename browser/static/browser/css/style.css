@@ -16,12 +16,15 @@ h3 {
     text-align: left;
 }
 a {
-    color: #393966;
+    color: #107dc7;
     font-weight: 600;
+}
+a:hover {
+    color: #000;
 }
 p {
     font-weight: 300;
-    font-size: 18px;
+    font-size: 20px;
 }
 .center {
     text-align: center !important;
@@ -46,6 +49,7 @@ section {
 .navbar-dc {
     background-color: #000;
     margin-bottom: 0;
+    border-radius: 0;
 }
 .navbar-dc .navbar-brand {
     font-family: Georgia;
@@ -62,7 +66,7 @@ section {
 .navbar-dc .navbar-nav li a:focus {
     color: #fff;
     text-decoration: underline;
-    background-color: #393966;
+    background-color: #107dc7;
 }
 .navbar-dc .icon-bar {
     background-color: #fff;

@@ -2,12 +2,14 @@
 {% load static from staticfiles %}
 
 {% block title %}{{ object.date }} | {{ block.super }}{% endblock %}
+{% block twitter-title %}{{ object.date }} | {{ block.super }}{% endblock %}
+{% block fb-title %}{{ object.date }} | {{ block.super }}{% endblock %}
 
 {% block extra-css %}
 <style>
 	#viewer {
 		width: 100%;
-		max-width: 800px;
+		
 		height: 600px;
 		margin: 20px 0;
 		border: 1px solid black;
@@ -105,7 +107,7 @@
 
     var page_pdfs = [
     {% for page in object.pages.all %}
-    '{{ ARCHIVE_BUCKET_URL }}{{ page.pdf }}',
+    '{{ ARCHIVE_BUCKET_URL }}{{ page.pdf_path }}',
     {% endfor %}
     ];
 
@@ -114,6 +116,7 @@
         previousButton: 'previous-btn',
         zoomInButton: 'zoom-in-btn',
         zoomOutButton: 'zoom-out-btn',
+        defaultZoomLevel: 0,
         showHomeControl: false,
         showFullPageControl: false,
         showNavigator: true,
@@ -122,7 +125,7 @@
     var pages = [{% for page in object.pages.all %}
         {
             type: 'image',
-            url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.jpg }}'
+            url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.jpg_path }}'
         },
         {% endfor %}]
 

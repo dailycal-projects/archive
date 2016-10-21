@@ -23,21 +23,21 @@ class Command(BaseCommand):
             format(page_number, '02'))
 
     def handle(self, *args, **options):
-        # Connect to S3
-        s3 = boto3.resource('s3')
-        bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME)
 
         for filename in os.listdir(settings.RAW_DIR):
             if filename.endswith('.tif'):
                 logger.debug('Processing %s' % filename)
 
                 # Extract date and page number from filename
-                tif_re = re.compile(r'^.*(\d{4})[-.](\d{2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2}).tif')
+                tif_re = re.compile(r'^.*(\d{4})[-.](\d{1,2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2}).tif')
                 match = re.match(tif_re, filename)
 
                 if match:
                     date_parts = [
-                        match.group(1), match.group(2), match.group(3)]
+                        match.group(1),
+                        match.group(2),
+                        match.group(3)
+                    ]
                     date_parts = [int(d) for d in date_parts]
                     date = datetime.date(*date_parts)
                     page_number = int(match.group(4))
@@ -65,8 +65,7 @@ class Command(BaseCommand):
 
                         # Move the scan to the processed directory
                         raw_path = os.path.join(settings.RAW_DIR, filename)
-                        tif_path = os.path.join(
-                            settings.PROCESSED_DIR, page.tif)
+                        tif_path = page.local_path(page.tif_path)
                         shutil.copyfile(raw_path, tif_path)
 
                         # Process

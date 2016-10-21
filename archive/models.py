@@ -1,12 +1,14 @@
 import os
 import re
 import boto3
+import deepzoom
 import pytesseract
 from subprocess import call
 from PIL import Image
 from lxml import html
 from django.db import models
 from datetime import datetime
+from django.utils import timezone
 from PyPDF2 import PdfFileMerger
 from django.conf import settings
 from django.urls import reverse
@@ -30,7 +32,7 @@ class ArchivedFileModel(models.Model):
         Upload to the archival bucket.
         """
         local_path = self.local_path(path)
-        if os.path.exists(self.local_path):
+        if os.path.exists(local_path):
             s3 = boto3.resource('s3')
             bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME)
             bucket.upload_file(
@@ -85,6 +87,18 @@ class Page(ArchivedFileModel):
                 tif_file.save(f, 'JPEG')
         else:
             raise Exception('No TIF to generate JPG from.')
+
+    def save_deepzoom(self):
+        # Specify your source image
+        SOURCE = self.local_path(self.jpg_path)
+
+        # Create Deep Zoom Image creator with weird parameters
+        creator = deepzoom.ImageCreator(tile_size=128, tile_overlap=2, tile_format="png",
+                                        image_quality=0.8, resize_filter="bicubic")
+
+        # Create Deep Zoom image pyramid from source
+        DEST = self.local_path(self.filename + '.dzi')
+        creator.create(SOURCE, DEST)
     
     @property
     def pdf_path(self):
@@ -113,19 +127,19 @@ class Page(ArchivedFileModel):
         """
         self.save_jpg()
         self.save_pdf()
-        self.save_hocr_file()
-        self.save_ocr_text()
-        self.processed_datetime = datetime.now()
+        #self.save_hocr_file()
+        #self.save_ocr_text()
+        self.processed_datetime = timezone.now()
         self.save()
 
     def upload(self):
         """
         Upload TIF, JPG, hOCR and PDF.
         """
-        self.upload_file(self.local_path(self.tif_path))
-        self.upload_file(self.local_path(self.jpg_path))
-        self.upload_file(self.local_path(self.hocr_path))
-        self.upload_file(self.local_path(self.pdf_path))
+        self.upload_file(self.tif_path)
+        self.upload_file(self.jpg_path)
+        #self.upload_file(self.local_path(self.hocr_path))
+        self.upload_file(self.pdf_path)
 
     @property
     def hocr_path(self):
@@ -164,7 +178,6 @@ class Page(ArchivedFileModel):
             textnodes = line.xpath(".//text()")
             s = ''.join([text for text in textnodes])
             text += re.sub(r'\s+',' ',s)
-            text += ' '
 
         self.text = text
         self.save()
@@ -229,7 +242,6 @@ class Issue(ArchivedFileModel):
         """
         Generate the issue PDF. Assumes all page PDFs exist locally.
         """
-
         outfile = PdfFileMerger()
 
         # Add PDF for each page in the issue

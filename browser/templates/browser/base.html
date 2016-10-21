@@ -11,21 +11,21 @@
         <link rel='shortcut icon' href='http://www.dailycal.org/assets/uploads/2012/02/favicon.png'/>
         <meta name="twitter:card" content="summary"/>
         <meta name="twitter:description" content="An online archive of historical issues of the Daily Californian."/>
-        <meta name="twitter:title" content="The Daily Californian Archives"/>
+        <meta name="twitter:title" content="{% block twitter-title %}The Daily Californian Archive{% endblock %}"/>
         <meta name="twitter:site" content="@dailycal"/>
         <meta name="twitter:domain" content="The Daily Californian"/>
-        <meta name="twitter:image" content="http://i0.wp.com/www.dailycal.org/assets/uploads/2014/04/fbimage1410x738.png"/>
+        <meta name="twitter:image" content="{% static 'browser/img/newsprint-share-image.png' %}"/>
         <meta name="twitter:creator" content="@dailycal"/>
         <meta property="og:locale" content="en_US"/>
         <meta property="og:type" content="article"/>
-        <meta property="og:title" content="The Daily Californian Archives"/>
-        <meta property="og:url" content="An online archive of historical issues of the Daily Californian."/>
+        <meta property="og:title" content="{% block fb-title %}The Daily Californian Archive{% endblock %}"/>
+        <meta property="og:url" content=""/>
         <meta property="og:type" content="article"/>
-        <meta property="og:description" content=""/>
-        <meta property="og:image" content="http://i0.wp.com/www.dailycal.org/assets/uploads/2014/04/fbimage1410x738.png"/>
-        <meta property="og:image:width" content="1410">
-        <meta property="og:image:height" content="738">
-        <meta property="og:site_name" content="The Daily Californian"/>
+        <meta property="og:description" content="An online archive of historical issues of the Daily Californian."/>
+        <meta property="og:image" content="{% static 'browser/img/newsprint-share-image.png' %}"/>
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:site_name" content="The Daily Californian Archive"/>
         <meta property="article:publisher" content="https://www.facebook.com/dailycal"/>
         <meta property="fb:admins" content="877855486"/>
         {% block viewport %}<meta name="viewport" content="width=device-width, initial-scale=1.0">{% endblock %}
