@@ -127,9 +127,10 @@
             type: 'image',
             url:  '{{ ARCHIVE_BUCKET_URL }}{{ page.jpg_path }}'
         },
-        {% endfor %}]
+        {% endfor %}
+    ];
 
-    var currentPage = 1
+    var currentPage = 1;
     var hashIndex = parseInt(location.hash.split('#')[1]);
     if (hashIndex) {
         currentPage = hashIndex;

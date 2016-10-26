@@ -7,7 +7,7 @@
     <div class="col-md-8">
         <h1>Sponsor the archives</h1>
         <p>Other newspapers have paid hundreds of thousands of dollars to contractors to digitize and host their archives. As an independent newspaper, we’re trying to archive our newspaper at a fraction of that cost.</p>
-        <p>To help finance the digitization process, we suggest donating <b>$20 for one month</b> or <b>$200 for one year</b>. Any other amount will generally support the website and archiving process. We will display contributors’ names on our website alongside the sponsored issues — and all donations will go directly towards paying students for their labor and hosting the digitized newspapers online.</p>
+        <p>To help finance the digitization process, we suggest donating <b>$60 for each month</b> you'd like to sponsor or or <b>$600 for an entire year</b>. Any other amount will generally support the website and archiving process. We will display contributors’ names on our website alongside the sponsored issues — and all donations will go directly towards paying students for their labor and hosting the digitized newspapers online.</p>
 
         <br>
 
@@ -22,6 +22,19 @@
         <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynow_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
         <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
         </form>
+
+        <br>
+
+        <h2>Sponsors</h2>
+
+        <ul>
+        {% for month in sponsored_months %}
+        <li>
+        {{ month.sponsor }} ({{ month }})
+        </li>
+        {% endfor %}
+
+        <br>
 
     </div>
 </div>

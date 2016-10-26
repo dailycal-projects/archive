@@ -33,7 +33,6 @@ p {
 p.byline {
     font-size: 14px;
 }
-
 section {
     margin: 20px auto;
 }
@@ -41,11 +40,9 @@ section {
 .text p.byline {
     text-align: center;
 }
-
 .text p {
     text-align: left;
 }
-
 .navbar-dc {
     background-color: #000;
     margin-bottom: 0;
@@ -71,7 +68,6 @@ section {
 .navbar-dc .icon-bar {
     background-color: #fff;
 }
-
 .breadcrumb {
     margin-top: 20px;
     background: none;
@@ -84,42 +80,26 @@ section {
   position: absolute;
   bottom: 0;
 }
-
 .footer p {
     margin: 30px auto;
     color: #fff;
     font-weight: 200;
     font-size: 14px;
 }
-
 .footer a {
     color: #fff;
     font-weight: 600;
 }
-
 .right {
     text-align: right;
 }
-
 .small {
     font-size: 12px;
     color: grey;
 }
-
-div.dataTables_wrapper div.dataTables_filter input {
-    width: 300px;
-}
-
-div.dataTables_wrapper div.dataTables_filter {
-    text-align: left;
-}
-
 @media(max-width: 768px) {
     body {
         margin-bottom: 150px;
-    }
-    div.dataTables_wrapper div.dataTables_filter input {
-        width: 200px;
     }
 }
 @media(max-width: 480px) {

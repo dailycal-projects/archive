@@ -88,17 +88,18 @@ class Page(ArchivedFileModel):
         else:
             raise Exception('No TIF to generate JPG from.')
 
-    def save_deepzoom(self):
-        # Specify your source image
-        SOURCE = self.local_path(self.jpg_path)
+    @property
+    def dzi_path(self):
+        return self.filename + '.dzi'
 
-        # Create Deep Zoom Image creator with weird parameters
-        creator = deepzoom.ImageCreator(tile_size=128, tile_overlap=2, tile_format="png",
-                                        image_quality=0.8, resize_filter="bicubic")
-
-        # Create Deep Zoom image pyramid from source
-        DEST = self.local_path(self.filename + '.dzi')
-        creator.create(SOURCE, DEST)
+    def save_dzi(self):
+        tif_path = self.local_path(self.tif_path)
+        call([
+            'vips',
+            'dzsave',
+            self.local_path(self.tif_path),
+            self.local_path(self.filename)
+        ])
     
     @property
     def pdf_path(self):
@@ -127,6 +128,7 @@ class Page(ArchivedFileModel):
         """
         self.save_jpg()
         self.save_pdf()
+        self.save_dzi()
         #self.save_hocr_file()
         #self.save_ocr_text()
         self.processed_datetime = timezone.now()
@@ -195,11 +197,6 @@ class Issue(ArchivedFileModel):
     A single issue published on a particular day.
     """
     date = models.DateField(unique=True)
-    sponsor = models.CharField(
-        max_length=200,
-        null=True,
-        blank=False
-    )
     pdf_created = models.BooleanField(default=False)
 
     @property
@@ -272,8 +269,44 @@ class Issue(ArchivedFileModel):
 
         self.upload_file(self.local_path(self.pdf_path))
 
+    def upload_directory(self):
+        s3 = boto3.resource('s3')
+        bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME)
+
+        # Walk the tree.
+        for root, directories, files in os.walk(self.local_path(self.directory)):
+            for filename in files:
+                # Join the two strings in order to form the full filepath.
+                local_path = os.path.join(root, filename)
+                remote_path = os.path.join(
+                    self.directory,
+                    os.path.relpath(local_path, self.local_path(self.directory))
+                )
+
+                bucket.upload_file(
+                    local_path,
+                    remote_path,
+                    ExtraArgs={'ACL': 'public-read'}
+                )
+
     def __str__(self):
         return '{}'.format(self.date)
 
     class Meta:
         ordering = ['date']
+
+
+class Month(models.Model):
+    sponsor = models.CharField(
+        max_length=200,
+        null=True,
+        blank=False
+    )
+    date = models.DateField(unique=True)
+    available = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['date']
+
+    def __str__(self):
+        return self.date.strftime('%b %Y')

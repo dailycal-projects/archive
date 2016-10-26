@@ -5,8 +5,8 @@ from datetime import datetime
 from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
-from bakery.views import BuildableDetailView, BuildableTemplateView, BuildableMonthArchiveView
-from archive.models import Issue, Page
+from bakery.views import BuildableDetailView, BuildableListView, BuildableTemplateView, BuildableMonthArchiveView
+from archive.models import Issue, Page, Month
 
 class HomeView(BuildableTemplateView):
     template_name = 'browser/home.html'
@@ -41,35 +41,24 @@ class SponsorView(BuildableTemplateView):
     template_name = 'browser/sponsor.html'
     build_path = 'sponsor/index.html'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(SponsorView, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the months that have been sponsored
+        context['sponsored_months'] = Month.objects.exclude(sponsor=None)
+
+        return context
+
 
 class AboutView(BuildableTemplateView):
     template_name = 'browser/about.html'
     build_path = 'about/index.html'
 
 
-class MonthListView(BuildableTemplateView):
+class MonthListView(BuildableListView):
     template_name = 'browser/issue_archive.html'
     build_path = 'issues/index.html'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super(MonthListView, self).get_context_data(**kwargs)
-        # Add in a QuerySet of all the issues
-        date_list = Issue.objects.values_list('date', flat=True)
-        month_list = [(date.year, date.month) for date in date_list]
-        months_completed = list(set(month_list))
-
-        context['years'] = {}
-        for year in range(1871,2010):
-            context['years'][str(year)] = []
-            for month in range(1,13):
-                if (year, month) in months_completed:
-                    url = reverse('archive_month', args=[year, format(month, '02d')])
-                else:
-                    url = None
-                context['years'][str(year)].append((calendar.month_abbr[month], url))
-
-        return context
+    model = Month
 
 
 class MonthArchiveView(BuildableMonthArchiveView):

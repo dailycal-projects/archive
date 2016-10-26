@@ -12,13 +12,18 @@
 	vertical-align: middle;
 	font-weight: 300;
 }
-.table>tbody>tr>td.month-cell.active {
+.table>tbody>tr>td.month-cell.available, span.available {
 	font-weight: 600;
-	color: #000;
+	color: #fff;
 	background-color: #107dc7;
 }
-.table>tbody>tr>td.month-cell.active a {
+.table>tbody>tr>td.month-cell.available a {
 	color: #fff;
+}
+
+.table>tbody>tr>td.month-cell.sponsored, span.sponsored {
+	font-weight: 600;
+	color: #af7cdd;
 }
 
 .table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
@@ -33,17 +38,23 @@
 	<div class="col-md-8">
 	<h1>All issues</h1>
 	<p>The Daily Californian has been continually published since 1871, but we're starting by digitizing and publishing issues <a href="#1964">from 1964</a>. This page will be updated as we complete more issues. You can help us fill in the grid by <a href="{% url 'sponsor' %}">sponsoring the digitization</a> of a month or year.</p>
+
+	<p>Months that are <span style="padding: 2px 6px" class="available">highlighted</span> have been digitized. Months in <span class="sponsored">purple</span> have been sponsored, and will be available shortly.</p>
+
 	<br>
 	<table class="table">
 	<tbody>
-	{% for year, months in years.items|dictsortreversed:0 %}
-	<tr id={{year}}>
-		<th>{{ year }}</th>
-		{% for month in months %}
-			{% if month.1 %}
-				<td class="month-cell active"><a href="{{ month.1 }}">{{ month.0|upper }}</a></td>
+	{% regroup object_list by date.year as year_list %}
+	{% for year in year_list %}
+	<tr>
+		<td id="{{ year.grouper }}">{{ year.grouper }}</td>
+		{% for month in year.list %}
+			{% if month.available %}
+			<td class="month-cell available">
+				<a href="{% url 'archive_month' year=month.date.year month=month.date|date:'m' %}">{{ month.date|date:"M"|upper }}</a>
+			</td>
 			{% else %}
-				<td class="month-cell">{{ month.0|upper }}</td>
+			<td class="month-cell {% if month.sponsor %}sponsored{% endif %}">{{ month.date|date:"M"|upper }}</td>
 			{% endif %}
 		{% endfor %}
 	</tr>
