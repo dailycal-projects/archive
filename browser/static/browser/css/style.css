@@ -97,6 +97,7 @@ section {
     font-size: 12px;
     color: grey;
 }
+
 @media(max-width: 768px) {
     body {
         margin-bottom: 150px;
