@@ -249,7 +249,14 @@ class Issue(ArchivedFileModel):
         # Write the issue PDF
         local_pdf_path = self.local_path(self.pdf_path)
         issue_pdf = open(local_pdf_path, 'w+')
+        issue_pdf.close()
         outfile.write(local_pdf_path)
+
+    def upload_pdf(self):
+        """
+        Upload issue PDF.
+        """
+        self.upload_file(self.local_path(self.pdf_path))
 
     def process(self):
         """
@@ -267,7 +274,7 @@ class Issue(ArchivedFileModel):
         for page in self.pages.all():
             page.upload()
 
-        self.upload_file(self.local_path(self.pdf_path))
+        self.upload_pdf()
 
     def upload_directory(self):
         s3 = boto3.resource('s3')
