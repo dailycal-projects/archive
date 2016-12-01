@@ -93,6 +93,9 @@ class Page(ArchivedFileModel):
         return self.filename + '.dzi'
 
     def save_dzi(self):
+        """
+        Save a DZI file for this page using VIPS.
+        """
         tif_path = self.local_path(self.tif_path)
         call([
             'vips',
@@ -136,7 +139,7 @@ class Page(ArchivedFileModel):
 
     def upload(self):
         """
-        Upload TIF, JPG, hOCR and PDF.
+        Upload TIF, JPG, DZI and PDF.
         """
         self.upload_file(self.tif_path)
         self.upload_file(self.jpg_path)
