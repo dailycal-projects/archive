@@ -1,6 +1,7 @@
 import os
 import re
 import boto3
+import botocore
 import deepzoom
 import pytesseract
 from subprocess import call
@@ -280,24 +281,37 @@ class Issue(ArchivedFileModel):
         self.upload_pdf()
 
     def upload_directory(self):
-        s3 = boto3.resource('s3')
-        bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME)
+        """
+        Upload the files in this issue's local directory that
+        aren't already on s3.
+        """
+        client = boto3.client('s3')
 
-        # Walk the tree.
+        # Walk the tree
         for root, directories, files in os.walk(self.local_path(self.directory)):
             for filename in files:
-                # Join the two strings in order to form the full filepath.
+                # Join the two strings in order to form the full filepath
                 local_path = os.path.join(root, filename)
                 remote_path = os.path.join(
                     self.directory,
                     os.path.relpath(local_path, self.local_path(self.directory))
                 )
+                print(remote_path)
 
-                bucket.upload_file(
-                    local_path,
-                    remote_path,
-                    ExtraArgs={'ACL': 'public-read'}
-                )
+                # Check if the key already exists in s3
+                try:
+                    client.head_object(
+                        Bucket=settings.ARCHIVE_BUCKET_NAME,
+                        Key=remote_path,
+                    )
+                except botocore.exceptions.ClientError as e:
+                    print('Uploading')
+                    client.upload_file(
+                        Filename=local_path,
+                        Bucket=settings.ARCHIVE_BUCKET_NAME,
+                        Key=remote_path,
+                        ExtraArgs={'ACL': 'public-read'}
+                    )
 
     def __str__(self):
         return '{}'.format(self.date)
