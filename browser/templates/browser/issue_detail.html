@@ -136,6 +136,12 @@
         {% endfor %}
     ];
 
+    var pdfs = [
+        {% for page in object.pages.all %}
+        '{{ ARCHIVE_BUCKET_URL }}{{ page.pdf_path }}',
+        {% endfor %}
+    ];
+
     var viewer = OpenSeadragon({
         id: "viewer",
         defaultZoomLevel: 0,
@@ -164,7 +170,7 @@
 
         $('#page-number').val(currentPageNumber);
         window.location.hash = currentPageNumber;
-        $('#page-pdf').attr('href', pages[currentPageNumber - 1] + '.pdf');
+        $('#page-pdf').attr('href', pdfs[currentPageNumber - 1]);
         $('#copy-btn').attr('data-clipboard-text', location.href);
     }
 

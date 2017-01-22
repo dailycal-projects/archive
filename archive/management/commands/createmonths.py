@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    help = ""
+    help = "Populate database with month objects."
 
     def handle(self, *args, **options):
         for year in range(1900, 2000):

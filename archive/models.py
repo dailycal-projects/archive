@@ -89,19 +89,6 @@ class Page(ArchivedFileModel):
             raise Exception('No TIF to generate JPG from.')
 
     @property
-    def dzi_path(self):
-        return self.filename + '.dzi'
-
-    def save_dzi(self):
-        tif_path = self.local_path(self.tif_path)
-        call([
-            'vips',
-            'dzsave',
-            self.local_path(self.tif_path),
-            self.local_path(self.filename)
-        ])
-    
-    @property
     def pdf_path(self):
         return self.filename + '.pdf'
 
@@ -128,7 +115,6 @@ class Page(ArchivedFileModel):
         """
         self.save_jpg()
         self.save_pdf()
-        self.save_dzi()
         #self.save_hocr_file()
         #self.save_ocr_text()
         self.processed_datetime = timezone.now()
