@@ -45,8 +45,13 @@ class SponsorView(BuildableTemplateView):
         # Call the base implementation first to get a context
         context = super(SponsorView, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the months that have been sponsored
-        context['sponsored_months'] = Month.objects.exclude(sponsor=None)
-
+        context['sponsors'] = set(
+                                    Month.objects.exclude(
+                                        sponsor=None)
+                                    .values_list(
+                                        'sponsor',
+                                        flat=True)
+                                )
         return context
 
 
