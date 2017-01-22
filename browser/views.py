@@ -107,3 +107,19 @@ class IssueDetailView(BuildableDetailView):
             'issue_detail',
             kwargs=obj.date_parts_dict
         )
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(IssueDetailView, self).get_context_data(**kwargs)
+        # Add the sponsor if they exist
+        date_parts = map(int, [
+            self.kwargs['year'],
+            self.kwargs['month'],
+            '1'
+        ])
+        date = datetime(*date_parts)
+        sponsor = Month.objects.get(date=date).sponsor
+        if sponsor:
+            context['sponsor'] = sponsor
+
+        return context

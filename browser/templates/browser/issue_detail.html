@@ -91,7 +91,7 @@
         {% endwith %}
         </h3>
 
-        <p style="margin-bottom: 0;"><em>{% if object.sponsor %}Sponsored by {{ object.sponsor }}{% else %}<a href="{% url 'sponsor' %}">Sponsor this issue</a>{% endif %}</em></p>
+        <p style="margin-bottom: 0;"><em>{% if sponsor %}Sponsored by {{ sponsor }}{% else %}<a href="{% url 'sponsor' %}">Sponsor this issue</a>{% endif %}</em></p>
 
     </div>
     <div style="text-align: right; padding-right: 50px;" class="col-sm-4">
