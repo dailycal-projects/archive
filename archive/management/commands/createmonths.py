@@ -18,6 +18,3 @@ class Command(BaseCommand):
                 month_obj, c = Month.objects.get_or_create(date=start_date)
                 end_date = start_date + timedelta(weeks=4)
                 pages = Page.objects.filter(date__range = (start_date, end_date))
-                if pages:
-                    month_obj.available = True
-                    month_obj.save()

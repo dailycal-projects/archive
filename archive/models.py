@@ -7,7 +7,7 @@ from subprocess import call
 from PIL import Image
 from lxml import html
 from django.db import models
-from datetime import datetime
+from datetime import datetime, date, timedelta
 from django.utils import timezone
 from PyPDF2 import PdfFileMerger
 from django.conf import settings
@@ -296,7 +296,20 @@ class Month(models.Model):
         blank=False
     )
     date = models.DateField(unique=True)
-    available = models.BooleanField(default=False)
+
+    def get_pages(self):
+        start_date = self.date
+        end_date = start_date + timedelta(weeks=4)
+        pages = Page.objects.filter(date__range = (start_date, end_date))
+        return pages
+
+    @property
+    def available(self):
+        pages = self.get_pages()
+        if pages:
+            return True
+        else:
+            return False
 
     class Meta:
         ordering = ['date']
