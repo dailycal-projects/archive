@@ -1,8 +1,8 @@
 import os
 import re
 import boto3
-import deepzoom
-import pytesseract
+#import deepzoom
+#import pytesseract
 from subprocess import call
 from PIL import Image
 from lxml import html
