@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = "Populate database with month objects."
 
     def handle(self, *args, **options):
-        for year in range(1900, 2000):
+        for year in range(1900, 2001):
             for month in range(1, 13):
                 start_date = date(year, month, 1)
                 month_obj, c = Month.objects.get_or_create(date=start_date)
