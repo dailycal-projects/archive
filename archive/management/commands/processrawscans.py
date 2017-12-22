@@ -4,6 +4,7 @@ import boto3
 import logging
 import datetime
 import shutil
+import glob
 from PIL import Image
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -24,12 +25,13 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for filename in os.listdir(settings.RAW_DIR):
+        for filename in glob.glob(os.path.join(settings.RAW_DIR, '*.tif')):
+
             if filename.endswith('.tif'):
                 logger.debug('Processing %s' % filename)
 
                 # Extract date and page number from filename
-                tif_re = re.compile(r'^.*(\d{4})[-.](\d{1,2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2}).tif')
+                tif_re = re.compile(r'^.*(\d{4})[-.](\d{1,2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2})-000.tif')
                 match = re.match(tif_re, filename)
 
                 if match:
