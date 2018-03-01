@@ -31,7 +31,7 @@ class Command(BaseCommand):
                 logger.debug('Processing %s' % filename)
 
                 # Extract date and page number from filename
-                tif_re = re.compile(r'^.*(\d{4})[-.](\d{1,2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2})-000.tif')
+                tif_re = re.compile(r'^.*(\d{4})[-.](\d{1,2})[-.](\d{2})(?:[.-]?p|-)(\d{1,2}).tif')
                 match = re.match(tif_re, filename)
 
                 if match:

@@ -4,6 +4,7 @@ raw/
 processed/
 build/
 django.log
+.env
 
 # Elastic Beanstalk Files
 .ebextensions
