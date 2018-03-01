@@ -25,7 +25,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        for filename in glob.glob(os.path.join(settings.RAW_DIR, '*.tif')):
+        for filename in glob.glob(os.path.join(settings.RAW_DIR, '**/*.tif'), recursive=True):
 
             if filename.endswith('.tif'):
                 logger.debug('Processing %s' % filename)
