@@ -54,7 +54,7 @@ class Page(ArchivedFileModel):
     date = models.DateField()
     page_number = models.IntegerField()
     text = models.TextField()
-    issue = models.ForeignKey('Issue', null=True, related_name='pages')
+    issue = models.ForeignKey('Issue', null=True, related_name='pages', on_delete=models.PROTECT)
     processed_datetime = models.DateTimeField(null=True)
 
     @property
