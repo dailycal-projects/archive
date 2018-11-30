@@ -31,7 +31,12 @@ You can move images through the processing and archival pipeline with a series o
 * `updatedatabase`: Sync the database of pages and issues to the files already in the archival bucket
 * `downloadrawscans`: Download any new items from the raw S3 bucket
 * `processrawscans`: Check if the raw scans match our expected name format, and if so, move them to the archived files directory
+* `uploadprocessedscans`: Upload  files in a local `processed` folder to the Archive S3 bucket to ensure that all pdfs, including issue pdfs are uploaded.
 
 # Publish the website
 
 The site uses django-bakery to generate static pages for all the pages and issues. Eventually, as we add the ability to crowdsource text corrections and tags, this will need to change. For now, though, deploy the site using `python manage.py build` and `python manage.py publish`.
+
+# Uploading new issues
+
+For the Daily Californian-specific guide, go [here](https://docs.google.com/document/d/1qkn-ukmHCOPjAmbsagt5ecmA1JoEzYE2NW-HLN00EQc/edit?usp=sharing). 
