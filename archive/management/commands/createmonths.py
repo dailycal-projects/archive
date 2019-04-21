@@ -13,7 +13,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         current_year = datetime.now().year
-        for year in range(1875, current_year + 1):
+        for year in range(1871, current_year + 1):
             for month in range(1, 13):
                 start_date = date(year, month, 1)
                 month_obj, c = Month.objects.get_or_create(date=start_date)

@@ -19,6 +19,7 @@ class Command(BaseCommand):
         )
         s3 = session.resource('s3')
         bucket = s3.Bucket(settings.ARCHIVE_BUCKET_NAME) 
+        backup_bucket = s3.Bucket(settings.ARCHIVE_BUCKET_BACKUP_NAME)
 
         local_processed_path = settings.PROCESSED_DIR
         for (dirpath, _, filenames) in os.walk(local_processed_path):
@@ -26,7 +27,7 @@ class Command(BaseCommand):
                 path = os.path.join(dirpath, name)
                 key = path[len(local_processed_path)+1:]
 
-                # Checking if the file exists already in the S3 bucket
+                # Checking if the file exists already in the non-backup S3 bucket 
                 try:
                     s3.Object(settings.ARCHIVE_BUCKET_NAME, key).load()
                 except botocore.exceptions.ClientError as e:
@@ -37,4 +38,21 @@ class Command(BaseCommand):
                     else:
                         logger.debug('ERROR')
                 else:
-                    logger.debug('{} does exist in bucket'.format(key))
+                    logger.debug('{} does exist in archive bucket'.format(key))
+
+
+                 # Checking if the file exists already in the backup S3 bucket
+                try:
+                    s3.Object(settings.ARCHIVE_BUCKET_BACKUP_NAME, key).load()
+                except botocore.exceptions.ClientError as e:
+                    if e.response['Error']['Code'] == "404":
+                        with open(path, 'rb') as data:
+                            logger.debug('Uploading {}'.format(key))
+                            backup_bucket.put_object(Key=key, Body=data)
+                    else:
+                        logger.debug('ERROR')
+                else:
+                    logger.debug('{} does exist in backup archival bucket'.format(key))
+
+
+

@@ -181,7 +181,8 @@ STATIC_URL = '/static/'
 # App-specific settings
 
 ARCHIVE_BUCKET_NAME = os.getenv('ARCHIVE_BUCKET_NAME')
-RAW_BUCKET_NAME = os.getenv('RAW_BUCKET_NAME')
+# RAW_BUCKET_NAME = os.getenv('RAW_BUCKET_NAME')
+ARCHIVE_BUCKET_BACKUP_NAME = os.getenv('ARCHIVE_BUCKET_BACKUP_NAME')
 
 # Bakery settings
 

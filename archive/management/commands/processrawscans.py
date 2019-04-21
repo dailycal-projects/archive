@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = "Take scanned TIFs, generate JPEGs and PDFs and upload to \
-     the archival bucket."
+     the local dcarchive postgres database."
 
     def get_path(date, page_number):
         return '{0}/{1}/{2}/dailycal_{0}{1}{2}_{3}'.format(
