@@ -118,6 +118,7 @@ class IssueDetailView(BuildableDetailView):
             '1'
         ])
         date = datetime(*date_parts)
+
         sponsor = Month.objects.get(date=date).sponsor
         if sponsor:
             context['sponsor'] = sponsor

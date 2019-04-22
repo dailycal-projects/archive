@@ -41,7 +41,12 @@ class Command(BaseCommand):
                     logger.debug('{} does exist in archive bucket'.format(key))
 
 
-                 # Checking if the file exists already in the backup S3 bucket
+                # Checking if the file exists already in the backup S3 bucket
+
+                # The code below updates the backup s3 bucket with files in the newly processed folder.
+                # Your local processed folder does not need to have a complete copy of the archive (but it would be nice to have)
+                # The code below is not destructive in the sense that nothing is deleted. 
+
                 try:
                     s3.Object(settings.ARCHIVE_BUCKET_BACKUP_NAME, key).load()
                 except botocore.exceptions.ClientError as e:
